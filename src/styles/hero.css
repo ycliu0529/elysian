@@ -98,6 +98,12 @@
     display: flex;
     align-items: flex-end;
 }
+/* 放大首頁 Hero 中文副標（約 hero.css 第 90 行後） */
+.hero-paragraph-inner p {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
 
 /* Styles for large desktop */
 @media (min-width: 1439px) {  
