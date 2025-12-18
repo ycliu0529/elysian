@@ -1,0 +1,79 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Hero from "@components/Hero.astro";
+import Slider from "@components/Slider.astro";
+import FeaturedPost from "@components/FeaturedPost.astro";
+import PostCard from "@components/PostCard.astro";
+import Pagination from "@components/Pagination.astro";
+import TagsSlider from "@components/TagsSlider.astro";
+import globalSettings from '@config/config.json.ts';
+import { getSortedPosts } from "@utils/utils.js";
+
+import "@styles/section-header.css";
+
+const { posts: featured_posts } = await getSortedPosts({featured: true});
+const { posts, total_posts } = await getSortedPosts({limit: globalSettings.pagination_posts_number});
+const featured_posts_total_number = featured_posts.length;
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+---
+
+<BaseLayout globalSettings={globalSettings} t={t}>
+  <main>
+    <Hero 
+      globalSettings={globalSettings} 
+      title={t.homepage.title_hero}
+      description={t.homepage.description_hero} 
+      is_homepage={true}
+    />
+
+    <Slider globalSettings={globalSettings} posts_limit={6}/>
+
+    <section class:list={['featured-posts-section', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+      <div class="wide-container">
+          <div class="section-header section-padding">
+              <h2 class="desktop-section-header">{t.homepage.title_featured_posts_desktop}</h2>
+              <h2 class="mobile-section-header">{t.homepage.title_featured_posts_mobile}</h2>
+              <div class="section-number">
+                {featured_posts_total_number === 0 ? t.global.pagination.no_posts : featured_posts_total_number === 1 ? t.global.pagination.one_post : `${featured_posts_total_number} ${t.global.pagination.multiple_posts}`}
+              </div>
+          </div> 
+
+          <div class="featured-posts iteration-container">
+            {
+              featured_posts.map((post, index) =>
+                <FeaturedPost post={post} index={index + 1} total_number={featured_posts_total_number}/>
+              )
+            }                      
+          </div>
+      </div>
+    </section>
+
+    <section class="latest-posts-section">
+      <div class="wide-container">
+        <div class="latest-posts-grid section-padding-bottom">
+          <div class="section-header section-padding">
+            <h2 class="desktop-section-header">{t.homepage.title_latest_posts_desktop}</h2>
+            <h2 class="mobile-section-header">{t.homepage.title_latest_posts_mobile}</h2>
+            <div class="section-number">
+              {total_posts === 0 ? t.global.pagination.no_posts : total_posts === 1 ? t.global.pagination.one_post : `${total_posts} ${t.global.pagination.multiple_posts}`}
+            </div>
+          </div> 
+
+          <div class="grid pagination-grid">
+            {
+              posts.map((post) =>
+                  <PostCard post={post}/>
+              )
+            } 
+          </div>   
+
+          <Pagination t={t} posts_per_page={globalSettings.pagination_posts_number} total_posts={total_posts}/>
+        </div>
+      </div> 
+    </section>
+
+    <TagsSlider t={t} />
+  </main>
+</BaseLayout>

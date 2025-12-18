@@ -1,0 +1,41 @@
+---
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Hero from "@components/Hero.astro";
+import Pagination from "@components/Pagination.astro";
+import PostCard from "@components/PostCard.astro";
+import { getSortedPosts } from "@utils/utils.js";
+
+import "@styles/archive-tags.css"
+
+const { posts, total_posts } = await getSortedPosts({limit: globalSettings.pagination_posts_number});
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.archive_page.title_hero} description={t.archive_page.title_hero}>
+    <main>
+        <Hero 
+            globalSettings={globalSettings} 
+            t={t}
+            title={t.archive_page.title_hero}
+            total_number={total_posts}
+            is_archivepage={true}
+        />
+
+        <section class:list={['wide-container section-padding-top grid-section', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+            <div class="grid-outer section-padding-bottom">
+                <div class="grid pagination-grid">
+                    {
+                        posts.map((post) =>
+                            <PostCard post={post}/>
+                        )
+                    } 
+                </div>
+                
+                <Pagination t={t} posts_per_page={globalSettings.pagination_posts_number} total_posts={total_posts} is_archivepage={true}/>
+            </div>
+        </section> 
+    </main>
+</BaseLayout>
