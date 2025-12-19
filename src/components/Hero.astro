@@ -19,6 +19,7 @@ const { globalSettings, t } = Astro.props;
   <div class="wide-container">
     <div class="hero-wrapper">
 
+      {/* --- 主要內容區域 (文字與圖片) --- */}
       <div class="hero-text-wrapper">
 
         {/* --- 左側文字區塊 --- */}
@@ -66,39 +67,37 @@ const { globalSettings, t } = Astro.props;
           </div>
         </div>
 
-        {/* --- Archive Tags --- */}
+        {/* --- Archive Tags (如果有) --- */}
         {is_archivepage && (
           <div class="archive-tags-wrapper">
             <ArchiveTags globalSettings={globalSettings} t={t} />
           </div>
         )}
 
-        {/* 底線動畫 */}
-        <div 
-          class:list={[
-            'hero-separator-line', 
-            { 'horizontal-line-animation': globalSettings.use_page_load_animations }
-          ]}
-        ></div>
-
       </div>
+
+      {/* ★ 修正：將底線移到橫向 Grid 容器之外，確保它佔滿 100% 寬度 ★ */}
+      <div 
+        class:list={[
+          'hero-separator-line', 
+          { 'horizontal-line-animation': globalSettings.use_page_load_animations }
+        ]}
+      ></div>
+
     </div>
   </div>
 </section>
 
 <style>
   /* =========================================================
-     1. 放大效果強制生效區 (包含手機觸碰優化)
+     1. 放大效果
      ========================================================= */
-  
   .hero-img-zoom-container {
       width: 100%;
       height: 100%;
       position: relative;
-      overflow: hidden !important;
+      overflow: hidden !important; 
       border-radius: 4px;
-      /* 讓觸摸感應更靈敏 */
-      -webkit-tap-highlight-color: transparent;
   }
 
   .hero-zoom-img {
@@ -109,25 +108,13 @@ const { globalSettings, t } = Astro.props;
       display: block !important;
       position: absolute !important;
       inset: 0 !important;
-      
-      /* 動畫核心 */
       transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
       will-change: transform;
       transform: scale(1);
   }
 
-  /* 電腦版：滑鼠移入時放大 */
-  @media (hover: hover) {
-    .hero-image-wrapper:hover .hero-zoom-img {
-        transform: scale(1.1) !important;
-    }
-  }
-
-  /* 手機版：點擊或按住時放大 (Active 狀態) */
-  @media (hover: none) {
-    .hero-image-wrapper:active .hero-zoom-img {
-        transform: scale(1.05) !important; /* 手機版放大 5% 較為溫和 */
-    }
+  .hero-image-wrapper:hover .hero-zoom-img {
+      transform: scale(1.1) !important;
   }
 
   /* =========================================================
@@ -150,6 +137,11 @@ const { globalSettings, t } = Astro.props;
       width: 100%;
       height: auto;
       display: block;
+  }
+
+  /* 這裡是 Grid 容器 */
+  .hero-text-wrapper {
+      width: 100%;
   }
 
   .hero-heading-wrapper {
@@ -177,33 +169,59 @@ const { globalSettings, t } = Astro.props;
       min-height: 50vh; 
   }
 
+  /* 修正後的底線樣式 */
   .hero-separator-line {
       width: 100%;
       height: 1px;
       background-color: rgba(255, 255, 255, 0.3); 
-      margin-top: 30px;
+      margin-top: 40px; /* 調整與上方內容的距離 */
+      position: relative;
+      z-index: 5;
   }
 
-  /* 電腦版 */
+  /* 電腦版排版 */
   @media (min-width: 769px) {
       .hero {
           height: 92vh !important;
           min-height: 92vh !important;
           margin-bottom: -15vh;
       }
-      .hero-wrapper { transform: translateY(-8vh); }
+
+      .hero-wrapper {
+          transform: translateY(-8vh);
+      }
+
       .hero-text-wrapper {
           display: grid;
           grid-template-columns: 45% 50% 5%;
           align-items: stretch; 
+          height: auto;
       }
-      .hero-heading-wrapper { grid-column: 1 / 2; padding-left: 6vw; }
-      .hero-image-wrapper { grid-column: 2 / 3; height: auto; min-height: 100%; }
-      .hero-title-no-split { font-size: clamp(4rem, 9.5vw, 15rem); }
-      .hero-line { display: block; white-space: nowrap; }
+
+      .hero-heading-wrapper {
+          grid-column: 1 / 2;
+          padding-left: 6vw; 
+          z-index: 20; 
+      }
+
+      .hero-image-wrapper {
+          grid-column: 2 / 3;
+          height: auto;
+          min-height: 100%;
+          z-index: 1;
+      }
+
+      .hero-title-no-split {
+          font-size: clamp(4rem, 9.5vw, 15rem);
+      }
+
+      .hero-line {
+          display: block;
+          white-space: nowrap;
+      }
   }
 
-  /* 手機版修正 */
+  /* 手機版排版 */
   @media (max-width: 768px) {
       .hero-wrapper {
           transform: none;
@@ -212,11 +230,11 @@ const { globalSettings, t } = Astro.props;
       .hero-text-wrapper {
           display: flex;
           flex-direction: column;
-          gap: 20px; /* 手機版間距縮小一點 */
+          gap: 30px;
       }
       .hero-image-wrapper {
           width: 100%;
-          aspect-ratio: 1/1; /* 貓咪圖在手機上變正方形，非常適合貓圖 */
+          aspect-ratio: 1/1;
           height: auto;
       }
       .hero-title-no-split {
