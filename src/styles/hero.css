@@ -3,8 +3,20 @@
 }
 
 .hero h1 {
-    line-height: 75%;
-    overflow-wrap: anywhere;
+    line-height: 1.1;
+    
+    /* --- 新方法：百分比控制法 --- */
+    
+    /* 1. 救回單字：確保只在空白鍵換行，絕不切斷單字 (再也不會有 Lifelon-g) */
+    overflow-wrap: break-word; 
+    word-break: keep-all; /* 雙重保險，針對英文單字完整性 */
+
+    /* 2. 強制換行：標題只能佔 55% 寬度 */
+    /* 這會逼迫 "Lifelong" 必須掉下去，同時保證右邊有 45% 的空間給中文顯示 */
+    max-width: 55%; 
+
+    /* 3. 安全底線：避免在某些平板變太窄，至少給它 450px */
+    min-width: 450px; 
 }
 
 .hero-wrapper {
@@ -98,7 +110,8 @@
     display: flex;
     align-items: flex-end;
 }
-/* 放大首頁 Hero 中文副標（約 hero.css 第 90 行後） */
+
+/* 放大首頁 Hero 中文副標 */
 .hero-paragraph-inner p {
     font-size: 1.6rem;
     font-weight: 500;
@@ -106,7 +119,7 @@
 }
 
 /* Styles for large desktop */
-@media (min-width: 1439px) {  
+@media (min-width: 1439px) { 
     .hero {
         padding-top: 3.3vw;
     }
@@ -155,6 +168,9 @@
 
     .hero h1 {
         margin-top: 14px;
+        /* 手機版可以取消寬度限制，避免字太小 */
+        max-width: 100%; 
+        min-width: auto;
     }
    
     .hide-on-mobile {
@@ -193,4 +209,10 @@
     .hero-number {
         font-size: 24px;
     }
+}
+
+.hero p {
+    font-size: clamp(1.4rem, 2.0vw, 1.5rem); 
+    line-height: 1.3;                      
+    letter-spacing: 0.02em;                
 }

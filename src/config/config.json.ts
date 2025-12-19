@@ -2,7 +2,7 @@ import type { GlobalSettingsProps } from "@src-types/types.ts";
 
 const globalSettings: GlobalSettingsProps = {
     site_name: "Notes from a Lifelong Amateur",
-    site_meta_title: "Potentialité",
+    site_meta_title: "Multipotentialite",
     site_meta_description: "一個大學教師的終身學習、出發找樂子的旅程",
     site_meta_image_source: "/images/kusa-projects-logo.jpg",
     twitter_username: "@Your_Username",

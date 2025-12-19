@@ -29,10 +29,10 @@
 }
 
 .logo-image {
-    height: calc(35px * var(--logo-scale));
-    width: auto;
+  height: 32px;        /* ✅ 明確高度 */
+  width: auto;         /* 保持比例 */
+  display: block;
 }
-
 .logo .big-text {
     line-height: 75%;
 }
@@ -397,3 +397,4 @@
         min-width: 58vw;
     }
 }
+

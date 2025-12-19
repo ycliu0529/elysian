@@ -1,0 +1,66 @@
+---
+import type { HeroProps } from "@src-types/types.ts";
+import ArchiveTags from "@components/ArchiveTags.astro";
+
+import "@styles/hero.css";
+
+const {
+	title,
+    description,
+    is_homepage,
+    is_archivepage = false,
+    total_number
+} = Astro.props as HeroProps;
+
+const { globalSettings, t } = Astro.props;
+---
+
+<section class="hero">
+    <div class="wide-container">
+        <div class="hero-wrapper" style="display: block !important;">
+            <div class="hero-text-wrapper section-padding-bottom" 
+                 style="display: grid !important; grid-template-columns: 80% 20% !important; align-items: end !important; width: 100% !important; gap: 0 !important;">
+                
+                <div class="hero-heading-wrapper section-padding-top" 
+                     style="width: 100% !important; max-width: none !important; flex: none !important;">               
+                    <h1 
+                        class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}
+                        style="font-size: clamp(3rem, 8.5vw, 9rem); line-height: 1.0; word-break: keep-all !important; white-space: normal !important; margin: 0; padding: 0;"
+                    >
+                        Notes from a <br /> Lifelong Amateur
+                    </h1>
+
+                    {!is_homepage && (
+                        <>
+                            <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                            {total_number && (
+                                <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}>
+                                    {total_number}
+                                </h3>
+                            )}
+                        </>
+                    )}
+                </div> 
+                
+                {description &&
+                    <div class="hero-paragraph-wrapper" style="width: 100% !important; max-width: none !important; flex: none !important; display: flex; justify-content: flex-end;">
+                        <div class:list={['hero-paragraph-inner', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">
+                            <p style="font-size: 1rem; line-height: 1.5; text-align: right; margin: 0; padding-bottom: 10px;">
+                                {description}
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                {is_archivepage &&
+                    <div style="grid-column: 1 / span 2;">
+                        <ArchiveTags globalSettings={globalSettings} t={t}/>
+                    </div>
+                }
+                
+                <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]} 
+                     style="grid-column: 1 / span 2; width: 100% !important;"></div>
+            </div>
+        </div>
+    </div>
+</section>

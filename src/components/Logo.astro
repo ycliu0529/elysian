@@ -13,7 +13,7 @@ const { globalSettings, navbar_logo = true } = Astro.props;
         <Image 
             class={navbar_logo ? "logo-image" : "footer-logo-image"}
             src={logo as any}
-            alt=Notes from a Lifelong Amateur
+            alt={globalSettings.site_name}
             loading="eager"
         />
     ) : (

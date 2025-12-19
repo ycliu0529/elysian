@@ -5,55 +5,167 @@ import ArchiveTags from "@components/ArchiveTags.astro";
 import "@styles/hero.css";
 
 const {
-	title,
-    description,
-    is_homepage,
-    is_archivepage = false,
-    total_number
+  title,
+  description,
+  is_homepage,
+  is_archivepage = false,
+  total_number
 } = Astro.props as HeroProps;
 
 const { globalSettings, t } = Astro.props;
 ---
 
 <section class="hero">
-    <div class="wide-container">
-        <div class="hero-wrapper">
-            <div class="hero-text-wrapper section-padding-bottom">
-                <div class:list={['hero-heading-wrapper section-padding-top', { 'full-width': !description }]}>               
-                    <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{title}</h1>
+  <div class="wide-container">
+    {/*
+       ★ 修改重點 2：整體平行上提
+       在此處加上 transform: translateY(-8vh);
+       負值表示向上移動，8vh 大約是視窗高度的 8%，這會讓整個圖文區塊往 Header 靠近。
+       您可以根據需要調整這個數字 (例如 -5vh 或 -10vh)。
+    */}
+    <div class="hero-wrapper" style="transform: translateY(-8vh);">
 
+      <div
+        class="hero-text-wrapper"
+        style="
+          display: grid !important;
+          /*
+             ★ 修改重點 1：照片右邊留白
+             原為：grid-template-columns: 42% 58% !important;
+             改為三欄模式：
+             1. 文字欄：維持 42%
+             2. 圖片欄：縮小為 53%
+             3. 空白欄 (留白)：新增 5% 在最右側
+          */
+          grid-template-columns: 42% 53% 5% !important;
 
-                    {!is_homepage && (
-                        <>
-                            <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-                            {total_number && (
-                                <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}>
-                                    {total_number}
-                                </h3>
-                            )}
-                        </>
-                    )}
-                </div> 
-                
-                {description &&
-                    <div class="hero-paragraph-wrapper">
-                        {!is_homepage &&
-                            <div class:list={['hero-top-border hide-on-mobile', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-                        }
-                        <div class:list={['hero-paragraph-inner', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">
-                            <p>
-                                {description}
-                            </p>
-                        </div>
-                    </div>
-                }
+          /* 垂直對齊：Stretch 讓圖片高度自動跟隨文字區塊的高度 */
+          align-items: stretch !important;
 
-                {is_archivepage &&
-                    <ArchiveTags globalSettings={globalSettings} t={t}/>
-                }
-                
-                <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-            </div>
+          /* 讓 Grid 根據內容縮放，不要撐滿整個螢幕高度 */
+          height: auto !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        "
+      >
+
+        {/* --- 左側文字區塊 (佔用第 1 欄) --- */}
+        <div
+          class="hero-heading-wrapper"
+          style="
+            width: 100% !important;
+            flex: none !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: auto !important;
+            padding: 0 !important;
+            z-index: 10;
+            grid-column: 1 / 2; /* 明確指定在第一欄 */
+          "
+        >
+          <h1
+            class="hero-title-no-split"
+            style="
+              /* 維持 9.5vw 的大字體設定 */
+              font-size: clamp(4rem, 9.5vw, 14rem);
+              line-height: 0.95;
+              letter-spacing: -0.03em;
+              margin: 0;
+              padding: 0;
+
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: flex-start;
+            "
+          >
+            {title ? title : (
+              <>
+                <span style="display: block; white-space: nowrap;">Notes from a</span>
+                <span style="display: block; white-space: nowrap;">Lifelong</span>
+                <span style="display: block; white-space: nowrap;">Amateur</span>
+              </>
+            )}
+          </h1>
+
+          {!is_homepage && (
+            <>
+               <div style="margin-top: 35px;"></div>
+               {total_number && <h3>{total_number}</h3>}
+            </>
+          )}
         </div>
+
+        {/* --- 中間圖片區塊 (佔用第 2 欄) --- */}
+        <div
+          class="hero-image-wrapper"
+          style="
+            position: relative;
+            width: 100%;
+            height: auto !important; /* 高度跟隨文字 */
+            min-height: 100%;
+            padding: 0 !important;
+            grid-column: 2 / 3; /* 明確指定在第二欄 */
+          "
+        >
+          <div
+            class:list={[{ 'vertical-animation': globalSettings.use_page_load_animations }]}
+            style="width: 100%; height: 100%;"
+          >
+            <img
+              src="/my-hero.jpeg"
+              alt="Hero Image"
+              style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center center;
+                border-radius: 4px;
+                display: block;
+                position: absolute;
+                inset: 0;
+              "
+            />
+          </div>
+        </div>
+
+        {/*
+            第 3 欄 (5%) 會自動留空，形成右側留白。
+        */}
+
+        {is_archivepage && (
+          <div style="grid-column: 1 / span 3;"> {/* 若有 tag，讓它跨越全部三欄 */}
+            <ArchiveTags globalSettings={globalSettings} t={t} />
+          </div>
+        )}
+      </div>
     </div>
+  </div>
 </section>
+
+<style>
+  /* 全域排版邏輯：維持 100vh 置中且無捲軸 */
+  .hero {
+      height: 100vh !important;
+      min-height: 100vh !important;
+      display: flex !important;
+      /* 這裡維持 center，我們透過內層的 translateY 來向上偏移 */
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+  }
+
+  .wide-container, .hero-wrapper {
+      width: 100%;
+      height: auto !important;
+      display: block !important;
+  }
+
+  .hero-line {
+    display: block;
+  }
+</style>
