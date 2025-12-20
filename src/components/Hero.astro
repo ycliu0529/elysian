@@ -1,7 +1,6 @@
 ---
 import type { HeroProps } from "@src-types/types.ts";
 import ArchiveTags from "@components/ArchiveTags.astro";
-
 import "@styles/hero.css";
 
 const {
@@ -17,31 +16,30 @@ const { globalSettings, t } = Astro.props;
 
 <section class="hero-final-layout">
   <div class="hero-container-stable">
+    {/* --- 26 背景層 --- */}
+    <div class="hero-master-bg-text">26</div>
     
     <div class="hero-main-content">
       {/* --- 左側文字區域 --- */}
       <div class="text-side">
         <div class="title-container">
+          {/* 綠點：嚴格保留位置與動畫 */}
           <span class="green-dot breathing"></span>
           
           <h1 class="hero-title-fixed">
-            <span class="en-part">
+            <div class="en-part">
               <span class="float-up" style="animation-delay: 0.1s;">E</span>
               <span class="float-up" style="animation-delay: 0.2s;">N</span>
-            </span>
-            <span class="route-part">
+            </div>
+            <div class="route-part">
               <span class="float-up" style="animation-delay: 0.3s;">R</span>
               <span class="float-up" style="animation-delay: 0.4s;">O</span>
               <span class="float-up" style="animation-delay: 0.5s;">U</span>
               <span class="float-up" style="animation-delay: 0.6s;">T</span>
               <span class="float-up" style="animation-delay: 0.7s;">E</span>
-            </span>
+            </div>
           </h1>
         </div>
-        
-        {!is_homepage && total_number && (
-          <h3 class="total-number-text float-up" style="animation-delay: 0.9s;">{total_number}</h3>
-        )}
       </div>
 
       {/* --- 右側圖片區域 --- */}
@@ -50,188 +48,220 @@ const { globalSettings, t } = Astro.props;
           <img
             src="/my-hero.jpeg"
             alt="Hero Image"
-            class="hero-img-contain mirror-x"
+            class="hero-img-contain" 
           />
         </div>
       </div>
     </div>
 
+    {/* --- 底部橫線 --- */}
     <div class="hero-full-width-line"></div>
-
   </div>
 </section>
 
 <style>
-  /* 1. Logo 縮放控制 (僅在 Desktop 生效) */
-  @media (min-width: 769px) {
-    :global(.navbar-logo), :global(.site-logo), :global(.logo) {
-        transform: scale(2) !important;
-        transform-origin: left center !important;
-    }
-  }
-
-  /* 2. 基礎容器 (PC 原始提拉 -8vh 保持不變) */
+  /* 1. 基礎容器 */
   .hero-final-layout {
       width: 100%;
-      height: auto; 
-      min-height: 70vh; 
+      min-height: 60vh; /* 略微增加高度以適應手機垂直空間 */
       background-color: black;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      margin-top: -8vh;
+      overflow: hidden; 
+      margin-top: -5vh;
+      position: relative;
   }
 
   .hero-container-stable {
-      width: 92%;
-      max-width: 1700px;
+      width: 90%;
+      max-width: 1600px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       position: relative;
+      z-index: 5;
   }
 
-  /* 3. 主要排版 (PC 原始佈局保持不變) */
+  /* 2. 背景 26 */
+  .hero-master-bg-text {
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      transform: translateY(-50%) scale(0.85, 1.1);
+      font-size: 28vw;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.15); 
+      z-index: 0;
+      line-height: 0.8; 
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      opacity: 0;
+      animation: steadyFadeIn 1.2s ease-out 0.6s forwards;
+  }
+
+  @keyframes steadyFadeIn {
+      to { opacity: 1; transform: translateY(-50%) scale(0.85, 1.1); }
+  }
+
+  /* 3. 主要排版 */
   .hero-main-content {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 3vw; 
-      width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: center; /* 改成 flex-start 讓圖片向左移，緊跟在文字後 */
+    gap: 5vw; /* 調整這個 gap 數值，來控制圖片離文字多遠 */
+    width: 100%;
+    z-index: 10;
+}
+
+  /* 4. 文字與綠點 */
+  .text-side {
+      flex: 0 0 auto;
+      position: relative;
+      z-index: 15;
   }
 
-  /* 4. 文字與綠點 (180px / 0.7em 原始數值不變) */
-  .text-side {
-      flex: 1 1 auto;
-      position: relative;
+  .hero-title-fixed {
+      display: flex; 
+      flex-direction: column; 
+      line-height: 0.8; 
+      margin: 0; 
+      font-weight: 900; 
+      color: white !important;
+      /* 使用 clamp 確保在小螢幕字體縮小但不破壞比例 */
+      font-size: clamp(60px, 14vw, 220px); 
+      width: max-content;
   }
-  .title-container { position: relative; display: inline-block; }
+  
+  /* 嚴格保留字距 */
+  .en-part { 
+    font-size: 0.75em; 
+    letter-spacing: -0.15em; 
+  }
+
+  .route-part { 
+    font-size: 1em; 
+    letter-spacing: -0.15em; 
+  }
+
+  /* 綠點：位置參數嚴格固定 */
   .green-dot {
-      position: absolute; width: 32px; height: 32px;
-      background-color: #39FF14; border-radius: 50%;
-      z-index: 10; top: 5%; left: -50px; 
+      position: absolute; 
+      width: clamp(10px, 2.5vw, 40px); 
+      height: clamp(10px, 2.5vw, 40px);
+      background-color: #39FF14; 
+      border-radius: 50%;
+      z-index: 25; 
+      top: 0%; 
+      left: -10%; 
       box-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
   }
+
   .breathing { animation: breathe 3s ease-in-out infinite; }
   @keyframes breathe {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.15); opacity: 0.7; }
   }
 
-  .hero-title-fixed {
-      display: flex; flex-direction: column; line-height: 0.95; 
-      margin: 0; font-weight: 900; color: white; font-size: 180px; 
-  }
-  .en-part { display: flex; font-size: 0.7em !important; letter-spacing: -0.06em; }
-  .route-part { display: flex; font-size: 1em; letter-spacing: -0.04em; }
-
-  /* 進場動畫 (PC/Mobile 通用穩定邏輯) */
-  .float-up {
-      display: inline-block; opacity: 0; transform: translateY(30px);
-      animation: charFloatUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  @keyframes charFloatUp { to { opacity: 1; transform: translateY(0); } }
-
-  .float-up-fade {
-      opacity: 0;
-      transform: translateY(40px);
-      animation: imgFloatUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  @keyframes imgFloatUp { to { opacity: 1; transform: translateY(0); } }
-
-  /* 5. 圖片區域動畫 */
-  .image-side {
-      flex: 0 0 55%;
-      display: flex;
+  /* 5. 圖片區域 */
+  .image-side { 
+      flex: 1;
+      max-width: 700px;
+      display: flex; 
       align-items: flex-end;
   }
-  .image-box {
-      width: 100%;
-      max-width: 1000px;
+
+  .image-box { 
+      width: 100%; 
       overflow: hidden; 
-      border-radius: 4px;
-      background-color: transparent; /* 防止變黑 */
+      border-radius: 4px; 
+      /* 保留鏡像與進場位移 */
+      transform: scaleX(-1) translateY(0); 
   }
+  
+  .float-up-fade {
+      opacity: 0;
+      animation: imgEntrance 1s ease-out forwards;
+  }
+
+  @keyframes imgEntrance {
+      to { opacity: 1; transform: scaleX(-1) translateY(0); }
+  }
+
   .hero-img-contain {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
+      width: 100%; 
+      height: auto; 
       display: block;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-      /* 關鍵：防止手機觸控閃爍變色 */
-      -webkit-tap-highlight-color: transparent;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-  }
-  .mirror-x { transform: scaleX(-1); }
-
-  /* 只在支援 Hover 的裝置（PC）執行放大，避免手機變黑 */
-  @media (hover: hover) {
-    .image-box:hover .hero-img-contain.mirror-x {
-        transform: scaleX(-1) scale(1.1);
-    }
+      transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
   }
 
-  /* 6. 線條 (50px 原始間距不變) */
+  .image-box:hover .hero-img-contain {
+      transform: scale(1.1); 
+  }
+
+  /* 6. 底部橫線 */
   .hero-full-width-line {
-      width: 100%; height: 2px;
-      background-color: rgba(255, 255, 255, 0.5); margin-top: 50px;
+      width: 100%; 
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.3); 
+      margin-top: 4vh;
   }
 
-  :global(section:not(.hero-final-layout):first-of-type) {
-      margin-top: -60px !important; position: relative; z-index: 5;
+  /* 字體上升動畫 */
+  .float-up {
+      display: inline-block; opacity: 0; transform: translateY(20px);
+      animation: charFloatUp 0.6s ease-out forwards;
+  }
+  @keyframes charFloatUp { 
+      to { opacity: 1; transform: translateY(0); } 
   }
 
-  /* 電腦大螢幕優化 (220px 原始數值) */
-  @media (min-width: 1600px) {
-      .hero-title-fixed { font-size: 220px; }
-      .green-dot { width: 40px; height: 40px; left: -65px; }
+  /* --- 響應式適配區 (不更動樣式，僅微調比例) --- */
+
+  /* 平板尺寸 (如 iPad) */
+  @media (max-width: 1024px) {
+      .hero-container-stable { width: 92%; }
+      .hero-master-bg-text { font-size: 32vw; }
+      .image-side { max-width: 50%; }
   }
 
-  /* 手機版適配 (修復對齊與穩定性) */
-  @media (max-width: 768px) {
-      :global(.navbar-logo), :global(.site-logo), :global(.logo) {
-          transform: scale(1) !important;
-      }
+  /* 手機橫屏 */
+  @media (max-width: 896px) and (orientation: landscape) {
+      .hero-final-layout { min-height: 100vh; }
+      .hero-title-fixed { font-size: 10vw; }
+  }
 
-      .hero-final-layout {
-          margin-top: 0; 
-          align-items: flex-start; /* 整體改為靠左對齊 */
+  /* 手機直屏 (iPhone/Android) */
+  @media (max-width: 500px) {
+      .hero-main-content { 
+          flex-direction: column; /* 手機改為上下排版 */
+          align-items: flex-start; /* 改為左對齊 */
+          gap: 30px; 
       }
-
-      .hero-container-stable {
-          width: 90%; /* 稍微縮小寬度，避免貼邊 */
-          margin-left: 5%;
-      }
-
-      .hero-main-content {
-          flex-direction: column;
-          align-items: flex-start; /* 內容改為靠左對齊 */
-          text-align: left;
-          gap: 30px;
+      
+      .hero-master-bg-text { 
+          font-size: 50vw; /* 手機上背景數字放大增加衝擊感 */
+          top: 35%;
       }
 
       .hero-title-fixed {
-          font-size: 22vw; 
-          text-align: left;
-      }
-      
-      .en-part, .route-part { 
-          justify-content: flex-start; /* 文字強制靠左 */
+          font-size: 80px; /* 手機固定合適大小 */
       }
 
-      .image-side { 
-          width: 100%; 
-          justify-content: flex-start; /* 圖片強制靠左 */
-      }
-      
-      .image-box { 
-          max-width: 100%; 
-          overflow: visible; 
+      .image-side {
+          width: 100%; /* 圖片在手機上滿寬 */
+          max-width: 100%;
       }
 
-      .green-dot { display: none; }
+      .green-dot {
+          left: 0px; /* 手機上略微修正綠點視覺位置 */
+          top: 5%;
+      }
+
+      .hero-full-width-line {
+          margin-top: 15px;
+      }
   }
 </style>
