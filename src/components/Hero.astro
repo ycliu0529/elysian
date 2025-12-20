@@ -237,7 +237,7 @@ const { globalSettings, t } = Astro.props;
   @media (max-width: 500px) {
       .hero-final-layout {
           min-height: auto;
-          padding: 40px 0 0 0; /* 底部不留 padding，讓圖片貼近底線 */
+          padding: 40px 0 20px 0; /* 底部稍微留點空間給橫線 */
           overflow: visible; 
       }
 
@@ -248,27 +248,28 @@ const { globalSettings, t } = Astro.props;
           width: 100%;
       }
 
-      /* --- 核心修改：讓圖片全寬 --- */
+      /* --- 圖片留邊排版 --- */
       .image-side {
-          width: calc(100% + 10vw); /* 抵消父層的 90% 寬度限制 */
-          margin-left: -5vw;        /* 讓圖片向左伸展到螢幕邊緣 */
-          max-width: none;          /* 移除寬度限制 */
+          width: 92%;           /* 留一點邊，不全屏 */
+          margin: 10px auto 0;  /* 居中對齊，並與上方文字留間距 */
+          max-width: none;
           position: relative;
-          z-index: 5; 
+          z-index: 5;
+          /* 取消手機觸碰反應，解決不見或延遲的問題 */
+          pointer-events: none; 
       }
 
       .image-box {
-          border-radius: 0px;       /* 全寬圖片通常不設圓角，更有張力 */
+          border-radius: 4px;   /* 恢復圓角 */
           width: 100%;
-          transform: scaleX(-1);    /* 維持你的鏡像效果 */
+          transform: scaleX(-1); /* 維持鏡像 */
       }
 
-      .hero-img-contain {
-          width: 100%;
-          height: auto;
-          display: block;
+      /* 強制關閉手機上的 Hover 縮放動畫 */
+      .image-box:hover .hero-img-contain {
+          transform: scaleX(-1) !important; /* 保持原樣，不縮放 */
       }
-      /* -------------------------- */
+      /* ------------------ */
 
       .hero-title-fixed {
           font-size: 65px; 
@@ -287,6 +288,6 @@ const { globalSettings, t } = Astro.props;
       }
 
       .hero-full-width-line {
-          margin-top: 0px; /* 圖片全寬後，讓橫線緊貼圖片底部 */
+          margin-top: 20px; /* 恢復一點間距 */
       }
   }
