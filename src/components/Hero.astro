@@ -15,235 +15,243 @@ const {
 const { globalSettings, t } = Astro.props;
 ---
 
-<section class="hero">
-  <div class="wide-container">
-    <div class="hero-wrapper">
-
-      {/* --- 主要內容區域 (文字與圖片) --- */}
-      <div class="hero-text-wrapper">
-
-        {/* --- 左側文字區塊 --- */}
-        <div class="hero-heading-wrapper">
-          <h1 
-            class:list={[
-              'hero-title-no-split', 
-              { 'vertical-animation': globalSettings.use_page_load_animations }
-            ]}
-          >
-            {title ? title : (
-              <>
-                <span class="hero-line">Notes from a</span>
-                <span class="hero-line">Lifelong</span>
-                <span class="hero-line">Amateur</span>
-              </>
-            )}
+<section class="hero-final-layout">
+  <div class="hero-container-stable">
+    
+    <div class="hero-main-content">
+      {/* --- 左側文字區域 --- */}
+      <div class="text-side">
+        <div class="title-container">
+          <span class="green-dot breathing"></span>
+          
+          <h1 class="hero-title-fixed">
+            <span class="en-part">
+              <span class="float-up" style="animation-delay: 0.1s;">E</span>
+              <span class="float-up" style="animation-delay: 0.2s;">N</span>
+            </span>
+            <span class="route-part">
+              <span class="float-up" style="animation-delay: 0.3s;">R</span>
+              <span class="float-up" style="animation-delay: 0.4s;">O</span>
+              <span class="float-up" style="animation-delay: 0.5s;">U</span>
+              <span class="float-up" style="animation-delay: 0.6s;">T</span>
+              <span class="float-up" style="animation-delay: 0.7s;">E</span>
+            </span>
           </h1>
-
-          {!is_homepage && (
-            <>
-               <div style="margin-top: 35px;"></div>
-               {total_number && (
-                 <h3 class:list={[{ 'vertical-animation': globalSettings.use_page_load_animations }]}>
-                   {total_number}
-                 </h3>
-               )}
-            </>
-          )}
         </div>
-
-        {/* --- 中間圖片區塊 --- */}
-        <div class="hero-image-wrapper">
-          <div
-            class:list={[
-              'hero-img-zoom-container', 
-              { 'vertical-animation': globalSettings.use_page_load_animations }
-            ]}
-          >
-            <img
-              src="/my-hero.jpeg"
-              alt="Hero Image"
-              class="hero-zoom-img"
-            />
-          </div>
-        </div>
-
-        {/* --- Archive Tags (如果有) --- */}
-        {is_archivepage && (
-          <div class="archive-tags-wrapper">
-            <ArchiveTags globalSettings={globalSettings} t={t} />
-          </div>
+        
+        {!is_homepage && total_number && (
+          <h3 class="total-number-text float-up" style="animation-delay: 0.9s;">{total_number}</h3>
         )}
-
       </div>
 
-      {/* ★ 修正：將底線移到橫向 Grid 容器之外，確保它佔滿 100% 寬度 ★ */}
-      <div 
-        class:list={[
-          'hero-separator-line', 
-          { 'horizontal-line-animation': globalSettings.use_page_load_animations }
-        ]}
-      ></div>
-
+      {/* --- 右側圖片區域 --- */}
+      <div class="image-side">
+        <div class="image-box float-up-fade" style="animation-delay: 0.4s;">
+          <img
+            src="/my-hero.jpeg"
+            alt="Hero Image"
+            class="hero-img-contain mirror-x"
+          />
+        </div>
+      </div>
     </div>
+
+    <div class="hero-full-width-line"></div>
+
   </div>
 </section>
 
 <style>
-  /* =========================================================
-     1. 放大效果
-     ========================================================= */
-  .hero-img-zoom-container {
+  /* 1. Logo 200% 放大 (不動) */
+  :global(.navbar-logo), :global(.site-logo), :global(.logo) {
+      transform: scale(2) !important;
+      transform-origin: left center !important;
+  }
+
+  /* 2. 基礎容器 (不動) */
+  .hero-final-layout {
       width: 100%;
-      height: 100%;
+      height: auto; 
+      min-height: 70vh; 
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      margin-top: -8vh;
+  }
+
+  .hero-container-stable {
+      width: 92%;
+      max-width: 1700px;
+      display: flex;
+      flex-direction: column;
       position: relative;
-      overflow: hidden !important; 
+  }
+
+  /* 3. 主要排版 (不動) */
+  .hero-main-content {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 3vw; 
+      width: 100%;
+  }
+
+  /* 4. 文字與綠點樣式 (不動) */
+  .text-side {
+      flex: 1 1 auto;
+      position: relative;
+  }
+
+  .title-container {
+      position: relative;
+      display: inline-block;
+  }
+
+  .green-dot {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background-color: #39FF14;
+      border-radius: 50%;
+      z-index: 10;
+      top: 5%; 
+      left: -50px; 
+      box-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+  }
+
+  .breathing {
+      animation: breathe 3s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+      0%, 100% {
+          transform: scale(1);
+          opacity: 1;
+          box-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+      }
+      50% {
+          transform: scale(1.15);
+          opacity: 0.7;
+          box-shadow: 0 0 35px rgba(57, 255, 20, 1);
+      }
+  }
+
+  .hero-title-fixed {
+      display: flex;
+      flex-direction: column;
+      line-height: 0.95; 
+      margin: 0;
+      font-weight: 900;
+      color: white;
+      font-size: 180px; 
+  }
+
+  .en-part, .route-part {
+      display: flex;
+  }
+
+  .en-part {
+      font-size: 0.7em !important; 
+      letter-spacing: -0.06em;
+  }
+
+  .route-part {
+      font-size: 1em;
+      letter-spacing: -0.04em;
+  }
+
+  /* 動畫效果 (進場動畫完全還原) */
+  .float-up {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: charFloatUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes charFloatUp {
+      to { opacity: 1; transform: translateY(0); }
+  }
+
+  .float-up-fade {
+      opacity: 0;
+      transform: translateY(40px);
+      animation: imgFloatUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes imgFloatUp {
+      to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 5. 圖片區域 (修正：進場與 HOVER 獨立) */
+  .image-side {
+      flex: 0 0 55%;
+      display: flex;
+      align-items: flex-end;
+  }
+
+  .image-box {
+      width: 100%;
+      max-width: 1000px;
+      /* 關鍵：框固定，並確保不影響進場動畫的平移 */
+      overflow: hidden; 
       border-radius: 4px;
   }
 
-  .hero-zoom-img {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-      object-position: center center !important;
-      display: block !important;
-      position: absolute !important;
-      inset: 0 !important;
-      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
-      will-change: transform;
-      transform: scale(1);
-  }
-
-  .hero-image-wrapper:hover .hero-zoom-img {
-      transform: scale(1.1) !important;
-  }
-
-  /* =========================================================
-     2. 佈局樣式
-     ========================================================= */
-  .hero {
-      height: 100vh;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      margin: 0;
-      overflow: hidden;
-      position: relative; 
-      z-index: 1; 
-  }
-  
-  .wide-container, .hero-wrapper {
+  .hero-img-contain {
       width: 100%;
       height: auto;
+      object-fit: contain;
       display: block;
+      /* 圖片本身的平滑縮放動畫 */
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* 這裡是 Grid 容器 */
-  .hero-text-wrapper {
+  .mirror-x {
+      transform: scaleX(-1);
+  }
+
+  /* 使用偽類加入 HOVER：圖片放大 1.1 倍，框不變 */
+  .image-box:hover .hero-img-contain.mirror-x {
+      transform: scaleX(-1) scale(1.1);
+  }
+
+  /* 6. 線條 (不動) */
+  .hero-full-width-line {
       width: 100%;
+      height: 2px;
+      background-color: rgba(255, 255, 255, 0.5);
+      margin-top: 50px;
   }
 
-  .hero-heading-wrapper {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      z-index: 10;
-  }
-
-  .hero-title-no-split {
-      line-height: 0.95;
-      letter-spacing: -0.03em;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-  }
-
-  .hero-image-wrapper {
-      position: relative;
-      width: 100%;
-      min-height: 50vh; 
-  }
-
-  /* 修正後的底線樣式 */
-  .hero-separator-line {
-      width: 100%;
-      height: 1px;
-      background-color: rgba(255, 255, 255, 0.3); 
-      margin-top: 40px; /* 調整與上方內容的距離 */
+  /* 強制後續區塊上移 (不動) */
+  :global(section:not(.hero-final-layout):first-of-type) {
+      margin-top: -60px !important; 
       position: relative;
       z-index: 5;
   }
 
-  /* 電腦版排版 */
-  @media (min-width: 769px) {
-      .hero {
-          height: 92vh !important;
-          min-height: 92vh !important;
-          margin-bottom: -15vh;
-      }
-
-      .hero-wrapper {
-          transform: translateY(-8vh);
-      }
-
-      .hero-text-wrapper {
-          display: grid;
-          grid-template-columns: 45% 50% 5%;
-          align-items: stretch; 
-          height: auto;
-      }
-
-      .hero-heading-wrapper {
-          grid-column: 1 / 2;
-          padding-left: 6vw; 
-          z-index: 20; 
-      }
-
-      .hero-image-wrapper {
-          grid-column: 2 / 3;
-          height: auto;
-          min-height: 100%;
-          z-index: 1;
-      }
-
-      .hero-title-no-split {
-          font-size: clamp(4rem, 9.5vw, 15rem);
-      }
-
-      .hero-line {
-          display: block;
-          white-space: nowrap;
-      }
+  /* 電腦大螢幕優化 (不動) */
+  @media (min-width: 1600px) {
+      .hero-title-fixed { font-size: 220px; }
+      .green-dot { width: 40px; height: 40px; left: -65px; }
   }
 
-  /* 手機版排版 */
+  /* 手機版適配 (不動) */
   @media (max-width: 768px) {
-      .hero-wrapper {
-          transform: none;
-          padding: 20px;
-      }
-      .hero-text-wrapper {
-          display: flex;
+      .hero-main-content {
           flex-direction: column;
-          gap: 30px;
+          align-items: center;
+          text-align: center;
       }
-      .hero-image-wrapper {
-          width: 100%;
-          aspect-ratio: 1/1;
-          height: auto;
-      }
-      .hero-title-no-split {
-          font-size: 13vw; 
-          line-height: 1.1;
-      }
-      .hero-line {
-          display: inline-block;
-          white-space: normal; 
-      }
+      .en-part, .route-part { justify-content: center; }
+      .hero-title-fixed { font-size: 22vw; }
+      .image-side { width: 100%; }
+      .green-dot { display: none; }
+      /* 手機版為了穩定，關閉 overflow: hidden 以免圖片被切到 */
+      .image-box { overflow: visible; }
   }
 </style>
