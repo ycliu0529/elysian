@@ -257,10 +257,11 @@ const { globalSettings, t } = Astro.props;
       }
 
       .hero-title-fixed {
-          font-size: 70px; /* 稍微放大一點，增加張力 */
+          font-size: 60px; /* 稍微放大一點，增加張力 */
           align-items: flex-start; /* 2. 核心：讓 EN 和 ROUTE 靠左對齊 */
           line-height: 0.8;
-          padding-left: 10%; /* 給左邊留點呼吸空間，也給綠點位置 */
+          padding-left: 45px; /* 給左邊留點呼吸空間，也給綠點位置 */
+          position: relative;
       }
 
       .image-side {
@@ -277,10 +278,10 @@ const { globalSettings, t } = Astro.props;
 
       .green-dot {
           /* 3. 修正綠點位置，讓它固定在 EN 左側 */
-          left: -35px; /* 調整這個值直到它出現在 EN 旁邊 */
-          top: 8%; 
-          width: 25px;
-          height: 25px;
+          left: 10px; /* 調整這個值直到它出現在 EN 旁邊 */
+          top: 10%; 
+          width: 20px;
+          height: 20px;
           z-index: 100; /* 確保綠點在最前面 */
       }
 
