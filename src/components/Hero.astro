@@ -62,7 +62,7 @@ const { globalSettings, t } = Astro.props;
 </section>
 
 <style>
-  /* 1. Logo 縮放控制 (還原：只在電腦端放大) */
+  /* 1. Logo 縮放控制 (僅在 Desktop 生效) */
   @media (min-width: 769px) {
     :global(.navbar-logo), :global(.site-logo), :global(.logo) {
         transform: scale(2) !important;
@@ -70,7 +70,7 @@ const { globalSettings, t } = Astro.props;
     }
   }
 
-  /* 2. 基礎容器 (高度與提拉設定完全還原) */
+  /* 2. 基礎容器 (PC 原始提拉 -8vh 保持不變) */
   .hero-final-layout {
       width: 100%;
       height: auto; 
@@ -81,7 +81,7 @@ const { globalSettings, t } = Astro.props;
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      margin-top: -8vh; /* 原始提拉數值 */
+      margin-top: -8vh;
   }
 
   .hero-container-stable {
@@ -92,7 +92,7 @@ const { globalSettings, t } = Astro.props;
       position: relative;
   }
 
-  /* 3. 主要排版 (還原：保持原始彈性佈局) */
+  /* 3. 主要排版 (PC 原始佈局保持不變) */
   .hero-main-content {
       display: flex;
       flex-direction: row;
@@ -102,7 +102,7 @@ const { globalSettings, t } = Astro.props;
       width: 100%;
   }
 
-  /* 4. 文字與綠點樣式 (字體 180px / 0.7em 完全還原) */
+  /* 4. 文字與綠點 (180px / 0.7em 原始數值不變) */
   .text-side {
       flex: 1 1 auto;
       position: relative;
@@ -116,18 +116,18 @@ const { globalSettings, t } = Astro.props;
   }
   .breathing { animation: breathe 3s ease-in-out infinite; }
   @keyframes breathe {
-      0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 20px rgba(57, 255, 20, 0.8); }
-      50% { transform: scale(1.15); opacity: 0.7; box-shadow: 0 0 35px rgba(57, 255, 20, 1); }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.7; }
   }
 
   .hero-title-fixed {
       display: flex; flex-direction: column; line-height: 0.95; 
-      margin: 0; font-weight: 900; color: white; font-size: 180px; /* 原始數值 */
+      margin: 0; font-weight: 900; color: white; font-size: 180px; 
   }
   .en-part { display: flex; font-size: 0.7em !important; letter-spacing: -0.06em; }
   .route-part { display: flex; font-size: 1em; letter-spacing: -0.04em; }
 
-  /* 進場動畫 (還原原始邏輯) */
+  /* 進場動畫 (PC/Mobile 通用穩定邏輯) */
   .float-up {
       display: inline-block; opacity: 0; transform: translateY(30px);
       animation: charFloatUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -141,7 +141,7 @@ const { globalSettings, t } = Astro.props;
   }
   @keyframes imgFloatUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* 5. 圖片區域動畫 (框固定圖放大) */
+  /* 5. 圖片區域動畫 */
   .image-side {
       flex: 0 0 55%;
       display: flex;
@@ -152,6 +152,7 @@ const { globalSettings, t } = Astro.props;
       max-width: 1000px;
       overflow: hidden; 
       border-radius: 4px;
+      background-color: transparent; /* 防止變黑 */
   }
   .hero-img-contain {
       width: 100%;
@@ -159,13 +160,21 @@ const { globalSettings, t } = Astro.props;
       object-fit: contain;
       display: block;
       transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      /* 關鍵：防止手機觸控閃爍變色 */
+      -webkit-tap-highlight-color: transparent;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
   }
   .mirror-x { transform: scaleX(-1); }
-  .image-box:hover .hero-img-contain.mirror-x {
-      transform: scaleX(-1) scale(1.1);
+
+  /* 只在支援 Hover 的裝置（PC）執行放大，避免手機變黑 */
+  @media (hover: hover) {
+    .image-box:hover .hero-img-contain.mirror-x {
+        transform: scaleX(-1) scale(1.1);
+    }
   }
 
-  /* 6. 線條 (還原原始間距 50px) */
+  /* 6. 線條 (50px 原始間距不變) */
   .hero-full-width-line {
       width: 100%; height: 2px;
       background-color: rgba(255, 255, 255, 0.5); margin-top: 50px;
@@ -175,32 +184,54 @@ const { globalSettings, t } = Astro.props;
       margin-top: -60px !important; position: relative; z-index: 5;
   }
 
-  /* 電腦大螢幕優化 (還原數值 220px) */
+  /* 電腦大螢幕優化 (220px 原始數值) */
   @media (min-width: 1600px) {
       .hero-title-fixed { font-size: 220px; }
       .green-dot { width: 40px; height: 40px; left: -65px; }
   }
 
-  /* 手機版適配 (修正處：僅在此區塊關閉 Logo 放大與提拉) */
+  /* 手機版適配 (修復對齊與穩定性) */
   @media (max-width: 768px) {
-      /* 手機版還原 Logo，不遮擋標題 */
       :global(.navbar-logo), :global(.site-logo), :global(.logo) {
           transform: scale(1) !important;
       }
 
       .hero-final-layout {
-          margin-top: 0; /* 取消手機版提拉，避免撞到導覽列 */
+          margin-top: 0; 
+          align-items: flex-start; /* 整體改為靠左對齊 */
+      }
+
+      .hero-container-stable {
+          width: 90%; /* 稍微縮小寬度，避免貼邊 */
+          margin-left: 5%;
       }
 
       .hero-main-content {
           flex-direction: column;
-          align-items: center;
-          text-align: center;
+          align-items: flex-start; /* 內容改為靠左對齊 */
+          text-align: left;
+          gap: 30px;
       }
-      .en-part, .route-part { justify-content: center; }
-      .hero-title-fixed { font-size: 22vw; } /* 原始手機版字體大小 */
-      .image-side { width: 100%; }
-      .image-box { overflow: visible; }
+
+      .hero-title-fixed {
+          font-size: 22vw; 
+          text-align: left;
+      }
+      
+      .en-part, .route-part { 
+          justify-content: flex-start; /* 文字強制靠左 */
+      }
+
+      .image-side { 
+          width: 100%; 
+          justify-content: flex-start; /* 圖片強制靠左 */
+      }
+      
+      .image-box { 
+          max-width: 100%; 
+          overflow: visible; 
+      }
+
       .green-dot { display: none; }
   }
 </style>
