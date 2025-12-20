@@ -236,43 +236,55 @@ const { globalSettings, t } = Astro.props;
   /* 手機直屏 (iPhone/Android) */
   @media (max-width: 500px) {
       .hero-final-layout {
-          min-height: auto; /* 讓容器隨內容高度縮放，解決下方大空白問題 */
-          padding: 40px 0; /* 給上下留一點間距 */
+          min-height: auto;
+          padding: 40px 0;
+          overflow: visible; /* 確保綠點不會被邊框切掉 */
       }
 
       .hero-main-content { 
-          flex-direction: column; /* 維持上下排版 */
-          align-items: center;    /* 改為居中，手機視覺較穩定 */
-          gap: 20px;              /* 縮小文字與圖片的間距 */
+          flex-direction: column; 
+          align-items: flex-start; /* 1. 回歸靠左對齊 */
+          gap: 20px; 
+          width: 100%;
       }
       
       .hero-master-bg-text { 
-          font-size: 60vw;        /* 背景數字大小 */
-          top: 25%;               /* 往上提一點 */
-          left: 50%;
-          transform: translate(-50%, -50%) scale(0.85, 1.1); /* 背景數字水平置中 */
+          font-size: 65vw;
+          top: 30%;
+          left: 5%; /* 背景 26 也稍微靠左，與文字呼應 */
+          transform: translateY(-50%) scale(0.85, 1.1);
+          z-index: -1; /* 確保背景數字永遠在最底層 */
       }
 
       .hero-title-fixed {
-          font-size: 60px;        /* 縮小字體 (從80px降到60px)，防止標題爆開換行 */
-          align-items: center;    /* 讓 EN 和 ROUTE 對齊 */
-          line-height: 0.85;      /* 稍微加寬行高，避免字疊太死 */
+          font-size: 70px; /* 稍微放大一點，增加張力 */
+          align-items: flex-start; /* 2. 核心：讓 EN 和 ROUTE 靠左對齊 */
+          line-height: 0.8;
+          padding-left: 10%; /* 給左邊留點呼吸空間，也給綠點位置 */
       }
 
       .image-side {
-          width: 90%;             /* 圖片不滿版，留點邊距感覺較精緻 */
-          max-width: 100%;
-          margin: 0 auto;
+          width: 95%; 
+          margin-top: -10px; /* 讓圖片稍微靠近文字底端 */
+          position: relative;
+          z-index: 5; /* 圖片層級低於文字，防止遮擋 */
+      }
+
+      .image-box {
+          border-radius: 4px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* 增加陰影讓圖片與背景分離 */
       }
 
       .green-dot {
-          left: 5px;              /* 改為正數，確保點點不會跑到螢幕外面 */
-          top: 10%;               /* 配合新字體大小調整垂直位置 */
-          width: 22px;            /* 固定手機版點的大小 */
-          height: 22px;
+          /* 3. 修正綠點位置，讓它固定在 EN 左側 */
+          left: -35px; /* 調整這個值直到它出現在 EN 旁邊 */
+          top: 8%; 
+          width: 25px;
+          height: 25px;
+          z-index: 100; /* 確保綠點在最前面 */
       }
 
       .hero-full-width-line {
-          margin-top: 20px;       /* 縮短橫線與上方內容的距離 */
+          margin-top: 30px;
       }
   }
