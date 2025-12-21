@@ -71,6 +71,7 @@ const { globalSettings, t } = Astro.props;
       overflow: visible; 
       margin-top: -5vh;
       position: relative;
+      overflow: hidden; /* <--- 必加，這是為了防止手機畫面左右晃動 */
   }
 
   .hero-container-stable {
@@ -86,8 +87,9 @@ const { globalSettings, t } = Astro.props;
   /* 2. 背景 26 */
   .hero-master-bg-text {
       position: absolute;
+      letter-spacing: -0.05em; /* 加入這行來調整字距 */
       top: 50%;
-      left: 10%;
+      left: 15%;
       transform: translateY(-50%) scale(0.85, 1.1);
       font-size: 28vw;
       font-weight: 900;
@@ -201,14 +203,26 @@ const { globalSettings, t } = Astro.props;
       transform: scale(1.1); 
   }
 
-  /* 6. 底部橫線 */
+  /* 6. 底部橫線：新增進場動畫 */
   .hero-full-width-line {
       width: 100%; 
       height: 1px;
       background-color: rgba(255, 255, 255, 0.3); 
       margin-top: 4vh;
+      /* 新增動畫屬性 */
+    transform: scaleX(0);            /* 初始狀態：寬度為 0 */
+    transform-origin: center;         /* 確保從左邊開始延伸 */
+    animation: lineExtend 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 0.8s;          /* 延遲播放，等文字浮現一半時再開始跑線 */
   }
-
+/* 定義由左往右伸長的動畫 */
+@keyframes lineExtend {
+    to {
+        /* 1 代表原始長度(容器的100%) */
+        /* 1.15 代表比現在長 15%，且不會影響版面高度或其他元件 */
+        transform: scaleX(1.2);
+    }
+}
   /* 字體上升動畫 */
   .float-up {
       display: inline-block; opacity: 0; transform: translateY(20px);
@@ -289,5 +303,24 @@ const { globalSettings, t } = Astro.props;
 
       .hero-full-width-line {
           margin-top: 20px; /* 恢復一點間距 */
+          /* 確保手機版也套用縮短後的動畫 */
+          animation: lineExtendMobile 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          animation-delay: 0.8s;
       }
   }
+
+  /* 針對手機版的動畫定義：改為 0.9 */
+  @keyframes lineExtendMobile {
+      to {
+          transform: scaleX(0.9); 
+      }
+  }
+
+  /* 針對電腦版的動畫定義：維持 1.2 */
+  @keyframes lineExtend {
+      to {
+          transform: scaleX(1.2); 
+      }
+  }
+      
+  
