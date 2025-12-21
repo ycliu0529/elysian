@@ -1,34 +1,97 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import globalSettings from '@config/config.json.ts';
-import Hero from "@components/Hero.astro";
-import TagCard from "@components/TagCard.astro";
-import { getTags, getUniqueTagsWithCount } from "@utils/utils.ts";
+// src/pages/tags/index.astro
+import baselayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
 
-const tags = await getTags();
-const unique_tags = getUniqueTagsWithCount(tags)
+// 1. 抓取所有文章 [cite: 2025-12-21]
+const allposts = await getCollection("blog");
 
-const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
-  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+// 2. 提取所有標籤並計算數量 [cite: 2025-12-21]
+const tags = allposts.flatMap((post) => post.data.tags || []);
+const tagcounts = tags.reduce((acc, tag) => {
+  const normalizedtag = tag.toLowerCase();
+  acc[normalizedtag] = (acc[normalizedtag] || 0) + 1;
+  return acc;
+}, {});
+
+// 3. 排序標籤（按字母順序） [cite: 2025-12-21]
+const sortedtags = Object.keys(tagcounts).sort();
+
+const pagetitle = "By Tag"; // 網頁文字首字母大寫 [cite: 2025-12-21]
 ---
 
-<BaseLayout globalSettings={globalSettings} t={t} title={t.tags_page.title_hero} description={t.tags_page.description_hero}>
-  <main>
-    <Hero 
-      globalSettings={globalSettings} 
-      title={t.tags_page.title_hero}
-      description={t.tags_page.description_hero}
-      total_number={unique_tags.length}
-    />
+<baselayout title={pagetitle}>
+  <section class="archive-tag-section">
+    <header class="section-header">
+      <h1>{pagetitle}</h1>
+      <p>explore posts by their specific topics and keywords.</p>
+    </header>
 
-    <section class:list={['tags-section wide-container section-padding-top-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
-      <div class="grid tags-grid section-padding-bottom">
-        {
-          unique_tags.map((tag) =>
-              <TagCard name={tag.original} url={tag.slug} post_count={tag.count} t={t}/>
-          )
-        } 
-      </div>
-    </section>
-  </main>
-</BaseLayout>
+    <div class="tag-cloud">
+      {sortedtags.length > 0 ? (
+        sortedtags.map((tag) => (
+          <a href={`/tags/${tag}/`} class="tag-item">
+            <span class="tag-name">{tag}</span>
+            <span class="tag-count">{tagcounts[tag]}</span>
+          </a>
+        ))
+      ) : (
+        <p class="no-posts">no tags found yet.</p>
+      )}
+    </div>
+  </section>
+</baselayout>
+
+<style>
+  /* 程式碼維持全小寫規範 [cite: 2025-12-21] */
+  .archive-tag-section {
+    padding: 80px 0;
+    max-width: 900px;
+    margin: 0 auto;
+    min-height: 60vh;
+  }
+  .section-header {
+    margin-bottom: 60px;
+    border-bottom: 1px solid var(--text-color-20);
+    padding-bottom: 20px;
+  }
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+  }
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .tag-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background-color: var(--text-color-5);
+    border: 1px solid var(--text-color-10);
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+  }
+  .tag-item:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+  }
+  .tag-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+  .tag-count {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    background-color: var(--text-color-10);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .tag-item:hover .tag-count {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+</style>

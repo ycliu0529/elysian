@@ -1,0 +1,62 @@
+---
+// src/pages/archive/year.astro
+import baselayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+// 1. 抓取所有文章
+const allposts = await getCollection("blog");
+
+// 2. 修正為 pub_date 並使用正確的大寫 valueOf()
+const sortedposts = allposts
+  .filter((post) => post.data.pub_date) 
+  .sort((a, b) => b.data.pub_date.valueOf() - a.data.pub_date.valueOf());
+
+// 3. 將文章按年份進行群組分類
+const postsbyyear = sortedposts.reduce((acc, post) => {
+  const year = new Date(post.data.pub_date).getFullYear().toString();
+  if (!acc[year]) {
+    acc[year] = [];
+  }
+  acc[year].push(post);
+  return acc;
+}, {});
+
+const years = Object.keys(postsbyyear).sort((a, b) => Number(b) - Number(a));
+const pagetitle = "By Year";
+---
+
+<baselayout title={pagetitle}>
+  <section class="archive-year-section">
+    <h1>{pagetitle}</h1>
+    {years.length > 0 ? (
+      years.map((year) => (
+        <div class="year-group">
+          <h2 class="year-title">{year}</h2>
+          <ul class="post-list">
+            {postsbyyear[year].map((post) => (
+              <li class="post-item">
+                <time>{new Date(post.data.pub_date).toLocaleDateString()}</time>
+                <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    ) : (
+      <p>no posts found.</p>
+    )}
+  </section>
+</baselayout>
+
+<style>
+  /* 程式碼維持全小寫規範 */
+  .archive-year-section { padding: 4rem 0; max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 3rem; margin-bottom: 2rem; }
+  .year-group { margin-bottom: 3.5rem; }
+  .year-title { font-size: 2rem; border-bottom: 1px solid var(--text-color-20); margin-bottom: 1rem; }
+  .post-list { list-style: none; padding: 0; }
+  .post-item { display: flex; gap: 25px; padding: 12px 0; border-bottom: 1px dashed var(--text-color-10); }
+  time { color: var(--text-color-60); min-width: 100px; font-size: 0.9rem; }
+  a { text-decoration: none; color: var(--text-color); font-size: 1.1rem; }
+  a:hover { opacity: 0.7; }
+</style>

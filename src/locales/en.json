@@ -7,7 +7,7 @@
             "title": "Browse by Tags"
         },
         "footer": {
-            "footer_text": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
+            "footer_text": "Notes on learning, shared understanding, and everyday curiosities. Written slowly, updated occasionally, and always unfinished.",
             "form_placeholder": "Your.email@example.com",
             "credits": "All rights reserved."
         },
@@ -28,7 +28,7 @@
     },
     "homepage": {
         "title_hero": "EN ROUTE",
-        "description_hero": "一個大學老師帶著虎斑貓 Aru ♥ 一起終身學習、出發找樂子的奇妙旅程。",
+        "description_hero": "",
         "title_featured_posts_desktop": "Discover Our Featured Posts",
         "title_featured_posts_mobile": "Featured Posts",
         "title_latest_posts_desktop": "Read Our Latest Posts",

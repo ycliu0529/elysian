@@ -1,0 +1,118 @@
+---
+// src/pages/archive/series.astro
+import baselayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+// 1. 抓取所有 blog 文章 [cite: 2025-12-21]
+const allposts = await getCollection("blog");
+
+// 2. 提取並將文章按系列 (series) 分類
+const postsbyseries = allposts.reduce((acc, post) => {
+  const seriesname = post.data.series;
+  if (seriesname) {
+    // 這裡我們維持系列名稱的原始大小寫，或者可以根據您的需求 normalized [cite: 2025-12-21]
+    if (!acc[seriesname]) {
+      acc[seriesname] = [];
+    }
+    acc[seriesname].push(post);
+  }
+  return acc;
+}, {});
+
+// 3. 取得所有系列名稱
+const serieslist = Object.keys(postsbyseries).sort();
+
+const pagetitle = "By Series"; // 網頁文字首字母大寫 [cite: 2025-12-21]
+---
+
+<baselayout title={pagetitle}>
+  <section class="archive-series-section">
+    <header class="section-header">
+      <h1>{pagetitle}</h1>
+      <p>curated collection of multi-part stories and thematic series.</p>
+    </header>
+
+    <div class="series-list">
+      {serieslist.length > 0 ? (
+        serieslist.map((series) => (
+          <div class="series-group">
+            <h2 class="series-title">{series}</h2>
+            <ul class="post-list">
+              {postsbyseries[series].map((post) => (
+                <li class="post-item">
+                  <a href={`/blog/${post.slug}/`} class="post-link">
+                    {post.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      ) : (
+        <div class="no-posts-container">
+          <p class="no-posts">no series found yet.</p>
+          <p class="instruction">to create a series, add <code>series: "your series name"</code> to your post's frontmatter.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</baselayout>
+
+<style>
+  /* 程式碼維持全小寫規範 [cite: 2025-12-21] */
+  .archive-series-section {
+    padding: 80px 0;
+    max-width: 800px;
+    margin: 0 auto;
+    min-height: 60vh;
+  }
+  .section-header {
+    margin-bottom: 60px;
+    border-bottom: 1px solid var(--text-color-20);
+    padding-bottom: 20px;
+  }
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+  }
+  .series-group {
+    margin-bottom: 50px;
+    background-color: var(--text-color-5);
+    padding: 30px;
+    border-left: 4px solid var(--text-color);
+  }
+  .series-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+  }
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+  .post-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--text-color-10);
+  }
+  .post-item:last-child {
+    border-bottom: none;
+  }
+  .post-link {
+    text-decoration: none;
+    color: var(--text-color-80);
+    transition: color 0.2s;
+  }
+  .post-link:hover {
+    color: var(--text-color);
+    text-decoration: underline;
+  }
+  .no-posts-container {
+    padding: 40px;
+    text-align: center;
+    background-color: var(--text-color-5);
+  }
+  .instruction code {
+    background-color: var(--text-color-10);
+    padding: 2px 6px;
+  }
+</style>

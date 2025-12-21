@@ -1,90 +1,64 @@
-
 import type { Footer } from "@src-types/types.ts";
 
 /**
- * Array of navigation links and dropdowns.
- * Add links or dropdowns here to display in the footer.
- * Only one level of dropdown links is supported.
+ * array of footer links.
+ * matched to user architecture: Now / Recommendations / Elsewhere.
+ * removed kusa projects as requested.
  */
 
-const footerSettings: Footer[] = [
-    {
-        text: "About",
-        dropdown: [
-            {
-                text: "Archive",
-                link: "/archive/",
-            },
-            {
-                text: "Tags",
-                link: "/tags/",
-            },
-            {
-                text: "Authors",
-                link: "/authors/",
-            },
-            {
-                text: "Membership",
-                link: "/membership/",
-            },
-            {
-                text: "FAQ",
-                link: "/faq/",
-            }
-        ],
-    },
-    {
-        text: "Features",
-        dropdown: [
-            {
-                text: "Features",
-                link: "/features/",
-            },
-            {
-                text: "Style Guide",
-                link: "/style-guide/",
-            },
-            {
-                text: "Documentation",
-                link: "https://www.kusa-projects.com/astro-documentation",
-                new_tab: true
-            },
-            {
-                text: "Changelog",
-                link: "/changelog/",
-            },
-            {
-                text: "404",
-                link: "/404/",
-            }
-        ],
-    },
-    {
-        text: "Account",
-        dropdown: [
-            {
-                text: "Account",
-                link: "/account/",
-            },
-            {
-                text: "Sign in",
-                link: "/signin/",
-            },
-            {
-                text: "Sign up",
-                link: "/signup/",
-            },
-            {
-                text: "Subscribe",
-                link: "/subscribe/"            
-            },
-            {
-                text: "KUSA Projects",
-                link: "https://www.kusa-projects.com/",
-                new_tab: true
-            }
-        ],
-    },
-]
+const footersettings: Footer[] = [
+  {
+    text: "Now",
+    dropdown: [
+      {
+        text: "Current Focus",
+        link: "/now/",
+      },
+      {
+        text: "In Progress",
+        link: "/projects/in-progress/",
+      },
+      {
+        text: "Next",
+        link: "/projects/next/",
+      },
+    ],
+  },
+  {
+    text: "Recommendations",
+    dropdown: [
+      {
+        text: "Books",
+        link: "/recommendations/books/",
+      },
+      {
+        text: "Tools",
+        link: "/recommendations/tools/",
+      },
+      {
+        text: "Media",
+        link: "/recommendations/media/",
+      },
+    ],
+  },
+  {
+    text: "Elsewhere",
+    dropdown: [
+      {
+        text: "Projects",
+        link: "/projects/",
+      },
+      {
+        text: "GitHub",
+        link: "https://github.com/",
+        new_tab: true,
+      },
+      {
+        text: "Links",
+        link: "/links/",
+      },
+    ],
+  },
+];
 
-export default footerSettings;
+export default footersettings;

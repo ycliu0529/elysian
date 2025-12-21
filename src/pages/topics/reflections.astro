@@ -1,34 +1,35 @@
 ---
-// src/pages/archive.astro
-import baselayout from "../layouts/BaseLayout.astro";
-import postcard from "../components/PostCard.astro";
+// src/pages/topics/reflections.astro
+import baselayout from "../../layouts/BaseLayout.astro";
+import postcard from "../../components/PostCard.astro";
 import { getCollection } from "astro:content";
 
 // 1. 抓取所有 blog 文章 [cite: 2025-12-21]
 const allposts = await getCollection("blog");
 
-// 2. 按日期由新到舊排序 (使用 pub_date)
-const sortedposts = allposts
-  .filter((post) => post.data.pub_date)
-  .sort((a, b) => b.data.pub_date.valueOf() - a.data.pub_date.valueOf());
+// 2. 過濾出標籤包含 "insights" 的文章
+const filteredposts = allposts.filter((post) => 
+  post.data.tags?.some((tag: string) => tag.toLowerCase() === "insights")
+);
 
-const pagetitle = "All Posts"; // 網頁文字首字母大寫 [cite: 2025-12-21]
+// 網頁顯示文字首字母大寫 [cite: 2025-12-21]
+const pagetitle = "Reflections"; 
 ---
 
 <baselayout title={pagetitle}>
-  <section class="archive-all-section">
+  <section class="topics-section">
     <header class="section-header">
       <h1>{pagetitle}</h1>
-      <p>a complete collection of every article published on this site.</p>
+      <p>deep dives into books, shared knowledge, and personal growth reflections.</p>
     </header>
-
+    
     <div class="post-grid">
-      {sortedposts.length > 0 ? (
-        sortedposts.map((post) => (
+      {filteredposts.length > 0 ? (
+        filteredposts.map((post) => (
           <postcard post={post} />
         ))
       ) : (
-        <p class="no-posts">no posts published yet. stay tuned!</p>
+        <p class="no-posts">no reflections or insights found yet.</p>
       )}
     </div>
   </section>
@@ -36,7 +37,7 @@ const pagetitle = "All Posts"; // 網頁文字首字母大寫 [cite: 2025-12-21]
 
 <style>
   /* 程式碼維持全小寫規範 [cite: 2025-12-21] */
-  .archive-all-section {
+  .topics-section {
     padding: 80px 0;
     max-width: 1200px;
     margin: 0 auto;
@@ -50,6 +51,7 @@ const pagetitle = "All Posts"; // 網頁文字首字母大寫 [cite: 2025-12-21]
   h1 {
     font-size: 3.5rem;
     font-weight: 700;
+    margin-bottom: 10px;
   }
   .post-grid {
     display: grid;
