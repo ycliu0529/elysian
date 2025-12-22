@@ -16,9 +16,32 @@ collections:
     label: "Blog"
     folder: "src/content/blog"
     create: true
+
+    # 關鍵 1：強制用 mdx（跟你現有內容一致）
+    extension: mdx
+    format: frontmatter
+
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Tags", name: "tags", widget: "list" }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+
+      # 關鍵 2：用 pub_date，不是 date
+      - label: "Publish Date"
+        name: "pub_date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD[T]00:00:00[Z]"
+        picker_utc: true
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"

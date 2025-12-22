@@ -7,16 +7,16 @@ import { getCollection } from "astro:content";
 // 引入確定存在的設定檔
 import globalSettings from "../../config/config.json.ts";
 
-// 1. 抓取文章資料 [cite: 2025-12-22]
+// 1. 抓取文章資料
 const allposts = await getCollection("blog");
 
-// 2. 過濾標籤包含 "english" 的文章 [cite: 2025-12-21]
+// 2. 過濾標籤包含 "english" 的文章
 const filteredposts = allposts.filter((post) => {
   const tags = post.data.tags || [];
   return tags.some((tag: string) => tag.toLowerCase().trim() === "english");
 });
 
-// 3. 按照日期排序 [cite: 2025-12-22]
+// 3. 按照日期排序
 const sortedposts = filteredposts.sort((a, b) => 
   new Date(b.data.pub_date).getTime() - new Date(a.data.pub_date).getTime()
 );
@@ -92,5 +92,3 @@ const pagetitle = "Learning";
     padding: 100px;
     color: var(--text-color-60);
     border: 1px dashed var(--text-color-20);
-  }
-</style>
